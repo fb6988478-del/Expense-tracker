@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Amar Hisab",
+    "slug": "mobile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/amar-hisab-icon.png",
+    "scheme": "amar-hisab",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#F6F3EE",
+      "image": "./assets/images/amar-hisab-icon.png",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {},
+    "web": {
+      "favicon": "./assets/images/amar-hisab-icon.png"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
