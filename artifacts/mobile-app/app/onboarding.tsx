@@ -32,7 +32,7 @@ export default function OnboardingScreen() {
         <View style={[styles.logo, { backgroundColor: colors.primary }]}>
           <Ionicons name="wallet-outline" size={25} color={colors.primaryForeground} />
         </View>
-        <Text style={[styles.brand, { color: colors.foreground }]}>আমার হিসাব</Text>
+        <Text style={[styles.brand, { color: colors.foreground }]}>অগ্রহায়ণ</Text>
       </View>
       <View style={styles.hero}>
         <Text style={[styles.kicker, { color: colors.primary }]}>আপনার নিজের টাকার সঙ্গী</Text>
