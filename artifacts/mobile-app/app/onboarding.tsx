@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AgraMascot } from '@/components/AgraMascot';
 import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat';
 import { CURRENCIES, USER_TYPES, CurrencyCode, UserType, useAmarHisab } from '@/context/AmarHisabContext';
 import { useColors } from '@/hooks/useColors';
@@ -22,23 +24,22 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <KeyboardAwareScrollViewCompat
-      style={{ backgroundColor: colors.background }}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + 18, paddingBottom: insets.bottom + 28 }]}
-      bottomOffset={28}
-      keyboardShouldPersistTaps="handled"
-    >
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <LinearGradient colors={[colors.background, colors.accent, colors.background]} locations={[0, 0.48, 1]} style={[StyleSheet.absoluteFill, styles.noPointer]} />
+      <View style={[styles.artOrb, styles.noPointer, { backgroundColor: colors.secondary }]} />
+      <KeyboardAwareScrollViewCompat
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 18, paddingBottom: insets.bottom + 28 }]}
+        bottomOffset={28}
+        keyboardShouldPersistTaps="handled"
+      >
       <View style={styles.brandRow}>
         <View style={[styles.logo, { backgroundColor: colors.primary }]}>
           <Ionicons name="wallet-outline" size={25} color={colors.primaryForeground} />
         </View>
         <Text style={[styles.brand, { color: colors.foreground }]}>অগ্রহায়ণ</Text>
       </View>
-      <View style={styles.hero}>
-        <Text style={[styles.kicker, { color: colors.primary }]}>আপনার নিজের টাকার সঙ্গী</Text>
-        <Text style={[styles.title, { color: colors.foreground }]}>হিসাব রাখুন,{'\n'}মনটা হালকা রাখুন।</Text>
-        <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>কোথা থেকে শুরু করবেন, সেটা না জানলেও সমস্যা নেই। আমরা ধীরে ধীরে একসাথে গুছিয়ে নেব।</Text>
-      </View>
+      <View style={styles.heroRow}><View style={styles.hero}><Text style={[styles.kicker, { color: colors.primary }]}>আপনার নিজের টাকার সঙ্গী</Text><Text style={[styles.title, { color: colors.foreground }]}>হিসাব রাখুন,{'\n'}মনটা হালকা রাখুন।</Text><Text style={[styles.subtitle, { color: colors.mutedForeground }]}>কোথা থেকে শুরু করবেন, সেটা না জানলেও সমস্যা নেই। অগ্র ধীরে ধীরে একসাথে গুছিয়ে নেবে।</Text></View><AgraMascot size={82} mood="hello" /></View>
 
       <Text style={[styles.label, { color: colors.foreground }]}>আপনাকে কী নামে ডাকব?</Text>
       <TextInput
@@ -103,16 +104,22 @@ export default function OnboardingScreen() {
         <Ionicons name="arrow-forward" size={19} color={selectedType ? colors.primaryForeground : colors.mutedForeground} />
       </Pressable>
       <Text style={[styles.privacy, { color: colors.mutedForeground }]}>আপনার হিসাব আপনার কাছেই থাকবে। এখন কোনো account বা payment লাগবে না।</Text>
-    </KeyboardAwareScrollViewCompat>
+      </KeyboardAwareScrollViewCompat>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1 },
+  scroll: { backgroundColor: 'transparent' },
+  noPointer: { pointerEvents: 'none' },
   content: { gap: 14, paddingHorizontal: 20 },
+  artOrb: { borderRadius: 99, height: 170, opacity: 0.5, position: 'absolute', right: -65, top: 85, width: 170 },
   brandRow: { alignItems: 'center', flexDirection: 'row', gap: 10 },
   logo: { alignItems: 'center', borderRadius: 15, height: 44, justifyContent: 'center', width: 44 },
   brand: { fontFamily: 'Inter_700Bold', fontSize: 17 },
-  hero: { gap: 10, marginBottom: 12, marginTop: 24 },
+  heroRow: { alignItems: 'flex-end', gap: 4, marginBottom: 12, marginTop: 24 },
+  hero: { flex: 1, gap: 10 },
   kicker: { fontFamily: 'Inter_700Bold', fontSize: 12, letterSpacing: 0.4 },
   title: { fontFamily: 'Inter_700Bold', fontSize: 33, letterSpacing: -1, lineHeight: 39 },
   subtitle: { fontFamily: 'Inter_400Regular', fontSize: 14, lineHeight: 21 },

@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "অগ্রহায়ণ",
-    "slug": "mobile-app",
+    "slug": "ogrohayon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/amar-hisab-icon.png",
-    "scheme": "amar-hisab",
+    "scheme": "ogrohayon",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "backgroundColor": "#F6F3EE",
+      "backgroundColor": "#FBF8F3",
       "image": "./assets/images/amar-hisab-icon.png",
       "resizeMode": "contain"
     },

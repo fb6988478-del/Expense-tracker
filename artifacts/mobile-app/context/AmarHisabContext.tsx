@@ -70,6 +70,7 @@ export type ExpenseCategory = {
   icon: string;
   color: 'coral' | 'green' | 'yellow' | 'blue' | 'purple';
   wallet: WalletType | 'both';
+  audiences?: UserType[];
 };
 
 export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
@@ -78,6 +79,9 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
   { id: 'housing', title: 'বাসা ভাড়া', subtitle: 'ভাড়া, মেরামত', icon: 'home-outline', color: 'purple', wallet: 'personal' },
   { id: 'utility', title: 'ইউটিলিটি', subtitle: 'বিদ্যুৎ, গ্যাস, নেট', icon: 'flash-outline', color: 'yellow', wallet: 'personal' },
   { id: 'education', title: 'শিক্ষা', subtitle: 'ফি, বই, কোর্স', icon: 'book-outline', color: 'green', wallet: 'personal' },
+  { id: 'data', title: 'মোবাইল ডাটা', subtitle: 'ইন্টারনেট ও রিচার্জ', icon: 'wifi-outline', color: 'blue', wallet: 'personal', audiences: ['student'] },
+  { id: 'learning', title: 'কোর্স ও শেখা', subtitle: 'স্কিল, বই, পরীক্ষা', icon: 'school-outline', color: 'purple', wallet: 'personal', audiences: ['student'] },
+  { id: 'sidework', title: 'সাইড কাজ', subtitle: 'প্রজেক্ট ও কাজের খরচ', icon: 'laptop-outline', color: 'green', wallet: 'personal', audiences: ['student'] },
   { id: 'family', title: 'সন্তান ও পরিবার', subtitle: 'পরিবারের প্রয়োজন', icon: 'heart-outline', color: 'coral', wallet: 'personal' },
   { id: 'occasion', title: 'উপলক্ষ', subtitle: 'বিয়ে, ঈদ, জন্মদিন', icon: 'gift-outline', color: 'purple', wallet: 'personal' },
   { id: 'savings', title: 'সঞ্চয়', subtitle: 'সঞ্চয় ও ইনভেস্টমেন্ট', icon: 'trending-up-outline', color: 'green', wallet: 'personal' },
@@ -89,9 +93,20 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
   { id: 'marketing', title: 'মার্কেটিং', subtitle: 'প্রচার ও বিজ্ঞাপন', icon: 'megaphone-outline', color: 'coral', wallet: 'business' },
 ];
 
+export const OCCASION_SUBOPTIONS = [
+  'বিয়ে (নিজের)',
+  'বিয়ে (ছেলে-মেয়ের)',
+  'বিয়ে (আত্মীয়ের)',
+  'জন্মদিন',
+  'ঈদ',
+  'পূজা',
+  'অ্যানিভার্সারি',
+  'অন্যান্য',
+] as const;
+
 export const BUDGET_GROUPS = [
   { id: 'necessary', title: 'প্রয়োজনীয়', subtitle: 'যা না হলে চলবে না', icon: 'checkmark-circle-outline', items: ['বাসা ভাড়া', 'খাবার', 'যাতায়াত', 'ইউটিলিটি', 'শিক্ষা'] },
-  { id: 'occasion', title: 'উপলক্ষ', subtitle: 'আগে থেকে প্রস্তুতি নিন', icon: 'gift-outline', items: ['নিজের বিয়ে', 'সন্তানের বিয়ে', 'ঈদ', 'পূজা', 'জন্মদিন', 'অ্যানিভার্সারি', 'অন্যান্য'] },
+  { id: 'occasion', title: 'উপলক্ষ', subtitle: 'আগে থেকে প্রস্তুতি নিন', icon: 'gift-outline', items: [...OCCASION_SUBOPTIONS] },
   { id: 'savings', title: 'ইনভেস্টমেন্ট / সঞ্চয়', subtitle: 'আগামীর জন্য আজই', icon: 'trending-up-outline', items: ['সঞ্চয়', 'ইনভেস্টমেন্ট', 'ডিপিএস'] },
   { id: 'family', title: 'সন্তান ও পরিবার', subtitle: 'আপনজনদের সুন্দর সময়', icon: 'people-outline', items: ['চিকিৎসা', 'শিক্ষা', 'পরিবারের ভ্রমণ', 'মাসিক সহায়তা'] },
   { id: 'emergency', title: 'জরুরি তহবিল', subtitle: 'হঠাৎ প্রয়োজনের নিরাপত্তা', icon: 'shield-checkmark-outline', items: ['চিকিৎসা', 'জরুরি যাতায়াত', 'বাড়ির মেরামত'] },
@@ -103,6 +118,7 @@ export type Expense = {
   amount: number;
   categoryId: string;
   categoryTitle: string;
+  subCategory?: string;
   note: string;
   wallet: WalletType;
   date: string;
@@ -139,6 +155,78 @@ export type AppProfile = {
     monthEnd: boolean;
   };
 };
+
+export type SmartMessage = {
+  title: string;
+  body: string;
+  mood: 'hello' | 'happy' | 'thinking' | 'celebrate';
+};
+
+export function getSmartMessage({
+  monthExpenses,
+  monthIncome,
+  totalBudget,
+  streak,
+  expenseCount,
+  incomeCount,
+  userType,
+}: {
+  monthExpenses: number;
+  monthIncome: number;
+  totalBudget: number;
+  streak: number;
+  expenseCount: number;
+  incomeCount: number;
+  userType: UserType | null;
+}): SmartMessage {
+  if (expenseCount === 0 && incomeCount === 0) {
+    return {
+      title: 'অগ্র শুরুটা নিজের দায়িত্বে নিয়েছে',
+      body: 'আজ শুধু একটি আয় বা খরচ লিখুন। বাকিটা অগ্র ধীরে ধীরে গুছিয়ে দেবে।',
+      mood: 'hello',
+    };
+  }
+  if (totalBudget > 0 && monthExpenses > totalBudget) {
+    return {
+      title: 'অগ্র একটু আগে থেকেই জানাচ্ছে',
+      body: 'এই মাসের খরচ আপনার পরিকল্পনার চেয়ে এগিয়ে গেছে। দোষ নয়—আজ থেকে কোন খরচটা একটু থামানো যায়, অগ্র সেটাই দেখাবে।',
+      mood: 'thinking',
+    };
+  }
+  if (streak >= 3) {
+    return {
+      title: `অগ্র আপনার ${streak} দিনের অভ্যাসটি দেখছে`,
+      body: 'প্রতিদিন একবার হিসাব লেখা মানে নিজের ভবিষ্যতের জন্য একটু জায়গা রাখা। এই ছোট ধারাটাই ধরে রাখুন।',
+      mood: 'celebrate',
+    };
+  }
+  if (userType === 'business' && monthIncome > 0) {
+    return {
+      title: 'অগ্র ব্যবসার হিসাবটাও আলাদা করে দেখছে',
+      body: 'ব্যক্তিগত ও ব্যবসার টাকা আলাদা রাখলে লাভ-ক্ষতির ছবিটা আরও পরিষ্কার হবে।',
+      mood: 'happy',
+    };
+  }
+  if (userType === 'student') {
+    return {
+      title: 'অগ্র আপনার পড়াশোনা আর আয়ের পাশে আছে',
+      body: 'ডাটা, কোর্স, সাইড কাজ—ছোট খরচগুলোও লিখে রাখলে নিজের পরিশ্রমের পুরো ছবিটা দেখা যায়।',
+      mood: 'happy',
+    };
+  }
+  if (monthIncome > 0 && monthExpenses <= monthIncome * 0.7) {
+    return {
+      title: 'অগ্র বলছে, আপনার গতি ঠিক আছে',
+      body: 'আয়ের বড় অংশ এখনো আপনার হাতে আছে। পরিকল্পনাটা ধরে রাখলেই মাসটা আরও স্বস্তির হবে।',
+      mood: 'happy',
+    };
+  }
+  return {
+    title: 'অগ্র আজকের হিসাবটা মনে রাখছে',
+    body: 'সবকিছু একদিনে গুছাতে হয় না। আজকের ছোট্ট হিসাবটুকুই আগামী দিনের স্বস্তির শুরু।',
+    mood: 'hello',
+  };
+}
 
 type AmarHisabValue = {
   profile: AppProfile;
